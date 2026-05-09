@@ -86,16 +86,15 @@ classDiagram
         +Vector3 position
         +boolean is_active
         +interact(Player p) void
-    }
 
-    Player *-- Inventory : Composición (1:1)
-    Inventory *-- History : Composición (1:1)
-    Inventory o-- Resource : Agregación (1:N)
-    Player ..> Oso : Interactúa / Caza
-    Player ..> Zombie : Recibe daño de
-    Player ..> Fogata : Usa para dormir/cocinar
-    Item3D --> Resource : Representa visualmente
-```
+      Player *-- Inventory : posee
+    Inventory *-- History : registra
+    Inventory o-- Resource : contiene
+    Player ..> Oso : Interactua
+    Player ..> Zombie : Recibe_dano
+    Player ..> Fogata : Usa
+    Item3D --> Resource : Representa
+
 
 #### Diagrama Entidad-Relación (ERD)
 Este diagrama representa el modelo de datos persistente que se almacena en los archivos JSON del sistema.
