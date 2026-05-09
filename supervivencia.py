@@ -117,7 +117,6 @@ class Player:
         self.name = name
         self.inventory = Inventory()
         
-        # Estadísticas Vitales
         self.health = 100
         self.hunger = 100
         self.thirst = 100
@@ -212,15 +211,13 @@ class Player:
 
     def explore(self):
         print("\nHas salido a explorar los alrededores...")
-        # time.sleep(1) # Removed for GUI compatibility
-        
-        # Explorar cuesta energía
+      
         self.hunger -= 10
         self.thirst -= 15
         
         evento = random.randint(1, 100)
         
-        if evento <= 45: # 45% chance of finding resources
+        if evento <= 45: 
             loot = random.choice([
                 ("agua", random.randint(1, 3), "litros", "vital"),
                 ("comida", random.randint(1, 3), "raciones", "vital"),
@@ -229,25 +226,24 @@ class Player:
             ])
             print(f"¡Tuviste suerte! Encontraste: {loot[1]} de {loot[0]}.")
             self.inventory.add_resource(loot[0], float(loot[1]), loot[2], loot[3])
-        elif evento <= 65: # 20% chance bad event
+        elif evento <= 65: 
             damage = random.randint(10, 25)
             self.health -= damage
             print(f"¡Cuidado! Un animal salvaje te atacó. Pierdes {damage} de salud.")
-        elif evento <= 85: # 20% chance minor bad event
+        elif evento <= 85: 
             print("El sol está muy fuerte y el terreno es duro. Te cansaste demasiado.")
             self.thirst -= 15
             self.hunger -= 10
-        else: # 15% chance nothing
+        else: 
             print("No encontraste nada útil. Mejor regresa.")
             
         self.clamp_stats()
 
     def sleep(self):
         print("\nDecides irte a dormir. Pasando al siguiente día...")
-        # time.sleep(1.5) # Removed for GUI compatibility
         self.day += 1
         
-        # Penalizaciones diarias
+   
         self.hunger -= 30
         self.thirst -= 40
         
@@ -346,7 +342,6 @@ def main():
         print("  La supervivencia no es para todos...")
         print("======================================")
         
-        # Eliminar el archivo de guardado al morir
         if os.path.exists(player.save_file):
             try:
                 os.remove(player.save_file)
