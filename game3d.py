@@ -12,7 +12,6 @@ except ImportError:
     print("Error: No se encuentra supervivencia.py")
     sys.exit(1)
 
-# --- CLASES DE ENTIDADES ---
 
 class Oso(Entity):
     def __init__(self, **kwargs):
@@ -21,41 +20,39 @@ class Oso(Entity):
         self.ear_l = Entity(parent=self.head, model='cube', color=color.brown, scale=(0.2, 0.2, 0.1), x=-0.3, y=0.3)
         self.ear_r = Entity(parent=self.head, model='cube', color=color.brown, scale=(0.2, 0.2, 0.1), x=0.3, y=0.3)
         
-        # Patas
+
         self.legs = []
         for x_pos in [-0.4, 0.4]:
             for z_pos in [-0.8, 0.8]:
                 leg = Entity(parent=self, model='cube', color=color.brown, scale=(0.3, 0.6, 0.3), x=x_pos, y=-0.8, z=z_pos)
                 self.legs.append(leg)
         
-        self.health = 20 # Vida reducida a 20 como pediste
+        self.health = 20 
         self.health_label = Text(parent=self, text="20/20", y=2, billboard=True, scale=5, color=color.red)
         self.attack_cooldown = 0
         self.walk_timer = 0
 
     def update(self):
         self.health_label.text = f"{int(self.health)}/20"
-        # Mirar al jugador si está cerca
+    
         dist = distance(self, player)
         if dist < 20:
             self.look_at(player)
-            self.rotation_x = 0 # No rotar hacia arriba/abajo
+            self.rotation_x = 0 
             
             if dist > 3:
-                # Caminar hacia el jugador
                 self.position += self.forward * time.dt * 3
-                # Animación de patas
                 self.walk_timer += time.dt * 10
                 for i, leg in enumerate(self.legs):
                     leg.rotation_x = math.sin(self.walk_timer + (i % 2) * math.pi) * 30
             else:
-                # Atacar
+              
                 self.attack_cooldown -= time.dt
                 if self.attack_cooldown <= 0:
                     logic_player.health -= 5
                     logic_player.clamp_stats()
                     show_pickup("¡EL OSO TE MORDIÓ! -5 HP")
-                    self.attack_cooldown = 2.0 # Atacar cada 2 segundos
+                    self.attack_cooldown = 2.0
                     
 def show_damage(pos, val):
     t = Text(text=f"-{val}", position=pos + Vec3(0,2,0), origin=(0,0), color=color.red, scale=3, billboard=True)
@@ -138,7 +135,7 @@ def input(key):
             update_inventory_ui()
             
     if key == 'left mouse button' or key == 'e':
-        # Ataque
+       
         for o in osos[:]:
             if distance(player, o) < 6:
                 o.health -= 3
@@ -165,7 +162,7 @@ def input(key):
 
 def update():
     global tick_counter, game_time
-    is_moving = False # Inicializar para evitar errores con el inventario
+    is_moving = False 
     
     if logic_player.is_dead:
         death_text.enabled = True
@@ -186,7 +183,7 @@ def update():
             game_time = 0.0
         return
 
-    # Movimiento 3D
+   
     base_speed = 10 * time.dt
     current_speed = base_speed * (1.8 if held_keys['shift'] else 1.0)
     
@@ -212,7 +209,7 @@ def update():
         camera.rotation_x -= mouse.velocity[1] * 100
         camera.rotation_x = clamp(camera.rotation_x, -30, 45)
             
-        # Animación Caminar
+      
         is_moving = held_keys['w'] or held_keys['s'] or held_keys['a'] or held_keys['d']
         if is_moving and player.grounded:
             anim_speed = 25 if held_keys['shift'] else 15
@@ -229,7 +226,7 @@ def update():
         player.x = clamp(player.x, -45, 45)
         player.z = clamp(player.z, -45, 45)
             
-        # Items
+    
         for item in items[:]:
             if distance(player, item) < 3.5:
                 qty = random.randint(1, 3) if item.r_type in ["agua", "comida"] else 1
@@ -241,7 +238,7 @@ def update():
                 items.remove(item)
                 destroy(item)
 
-    # Vitales
+
     tick_counter += 1
     if tick_counter >= 120:
         logic_player.hunger -= 1
@@ -249,15 +246,14 @@ def update():
         logic_player.clamp_stats()
         tick_counter = 0
         
-    # Variables de estado de tiempo
+   
     es_noche = game_time > 0.6 or game_time < 0.2
     es_noche_enemigos = game_time > 0.55 and game_time < 0.95
-    
-    # CICLO TIEMPO (Día lento, Noche normal)
+  
     if not es_noche:
-        game_time += time.dt / 180.0 # El día dura 3 veces más (3 min reales)
+        game_time += time.dt / 180.0 
     else:
-        game_time += time.dt / 60.0  # La noche dura 1 min real
+        game_time += time.dt / 60.0  
         
     if game_time >= 1.0:
         game_time = 0.0
@@ -272,7 +268,7 @@ def update():
     
     night_overlay.color = color.rgba(0.02, 0.02, 0.06, 0.8 if es_noche else 0)
         
-    # Enemigos Nocturnos
+
     if es_noche_enemigos:
         if len(enemigos) < 6:
             ex, ez = player.x + random.uniform(-20, 20), player.z + random.uniform(-20, 20)
@@ -290,10 +286,10 @@ def update():
         for z in enemigos: destroy(z)
         enemigos.clear()
 
-    # Spawning
+   
     if not es_noche_enemigos and random.random() < 0.002: spawn_oso()
         
-    # Fogata
+  
     cerca = distance(player, fogata) < 5
     tiene_carne = "carne_cruda" in logic_player.inventory.resources and logic_player.inventory.resources["carne_cruda"].quantity > 0
     texto = ""
@@ -309,7 +305,6 @@ def update():
 
     for item in items: item.rotation_y += 50 * time.dt
         
-    # SONIDOS ELIMINADOS PARA EVITAR ERRORES DE ARCHIVO FALTANTE
 
 def update_inventory_ui():
     for child in inventory_panel.children[:]:
