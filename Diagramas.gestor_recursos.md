@@ -1,6 +1,6 @@
 # Gestor de Recursos de Supervivencia
 
-Este proyecto simula un sistema de gestión de recursos en un entorno de supervivencia. El jugador puede registrar armas, medicinas y comida, asignarlas a su inventario y consumirlas según sea necesario. El objetivo es organizar y controlar los recursos de manera eficiente para sobrevivir en escenarios hostiles.
+Este proyecto simula un sistema de gestión de recursos en un entorno de supervivencia. El jugador puede registrar medicinas y comida, asignarlas a su inventario y consumirlas según sea necesario. El objetivo es organizar y controlar los recursos de manera eficiente para sobrevivir en escenarios hostiles.
 
 ## Requerimientos
 - **Funcionales:**
